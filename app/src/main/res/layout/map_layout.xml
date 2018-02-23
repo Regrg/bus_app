@@ -4,10 +4,40 @@
     android:id="@+id/map_container"
     android:layout_height="match_parent">
 
-    <fragment
-        android:id="@+id/map"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        class="com.google.android.gms.maps.SupportMapFragment" />
+        android:orientation="vertical">
+
+        <fragment
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            class="com.google.android.gms.maps.SupportMapFragment" />
+
+        <RelativeLayout
+            android:id="@+id/searchBar"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/searchLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="40sp"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/searchButton"
+                android:hint="Search Place"/>
+
+            <ImageButton
+                android:id="@+id/searchButton"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:background="@color/colorAccent" />
+
+        </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>
