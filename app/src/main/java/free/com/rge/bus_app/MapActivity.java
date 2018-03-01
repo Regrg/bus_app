@@ -6,14 +6,12 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -78,7 +76,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                addSingleMarker(latLng);
+                getLocationAddress(latLng);
             }
         });
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
@@ -118,28 +116,71 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public void onMapSearch() {
         if (!mSearchLocation.getText().toString().isEmpty()) {
-            String location = mSearchLocation.getText().toString();
-
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                List<Address> addressList = geocoder.getFromLocationName(location, 1);
-                if(!addressList.isEmpty()) {
-                    Address address = addressList.get(0);
-                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    addSingleMarker(latLng);
-                } else {
-                    Toast.makeText(context, "No Location Found", Toast.LENGTH_SHORT).show();
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            String locationString = mSearchLocation.getText().toString();
+            getLocationAddress(locationString);
         }
     }
 
-    private void addSingleMarker(LatLng latLng) {
+    private void addSingleMarker(LatLng latLng, String locationAddress) {
+        hideKeyboard();
         mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(latLng).title(latLng.toString()));
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.addMarker(new MarkerOptions().position(latLng).title(locationAddress));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
+    }
+
+    private void hideKeyboard() {
+        try {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (NullPointerException nul) {
+            nul.printStackTrace();
+        }
+    }
+
+    private String concatAddress(Address addressData) {
+        StringBuilder addressString = new StringBuilder();
+        addressString.append(addressData.getAddressLine(0));
+        addInfoToAddress(addressString, addressData.getLocality());
+        addInfoToAddress(addressString, addressData.getAdminArea());
+        addInfoToAddress(addressString, addressData.getCountryName());
+        addInfoToAddress(addressString, addressData.getThoroughfare());
+        addInfoToAddress(addressString, addressData.getFeatureName());
+        addInfoToAddress(addressString, addressData.getPostalCode());
+        return addressString.toString();
+    }
+
+    private void addInfoToAddress(StringBuilder stringBuilder, String string) {
+        if(string != null)
+            stringBuilder.append(", ").append(string);
+    }
+
+    private void getLocationAddress(String location) {
+        Geocoder geocoder = new Geocoder(this);
+        try {
+            List<Address> addressList = geocoder.getFromLocationName(location, 1);
+            if(!addressList.isEmpty()) {
+                Address addressData = addressList.get(0);
+                LatLng latLng = new LatLng(addressData.getLatitude(), addressData.getLongitude());
+                addSingleMarker(latLng, concatAddress(addressData));
+            } else {
+                Toast.makeText(context, "No Location Found", Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Address getLocationAddress(LatLng latLng) {
+        Geocoder geocoder = new Geocoder(context);
+        try {
+            List<Address> addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            if (!addressList.isEmpty())
+                addSingleMarker(latLng, concatAddress(addressList.get(0)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
