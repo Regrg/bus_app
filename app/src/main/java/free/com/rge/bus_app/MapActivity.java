@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
@@ -56,6 +57,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(25.045111534614094, 121.51530884206294), 12.0f));
 
         mUiSettings = mMap.getUiSettings();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -64,7 +66,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
         mMap.setMyLocationEnabled(true);
 
-//        mUiSettings.setZoomControlsEnabled(true);
+        mUiSettings.setZoomControlsEnabled(true);
         mUiSettings.setCompassEnabled(true);
         mUiSettings.setMyLocationButtonEnabled(true);
         mUiSettings.setScrollGesturesEnabled(true);
@@ -73,9 +75,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //        mUiSettings.setRotateGesturesEnabled(isChecked(R.id.rotate_toggle));
 
         /** ya, addmarker code */
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
-            public void onMapClick(LatLng latLng) {
+            public void onMapLongClick(LatLng latLng) {
                 getLocationAddress(latLng);
             }
         });
