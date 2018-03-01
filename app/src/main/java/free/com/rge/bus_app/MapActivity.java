@@ -2,6 +2,7 @@ package free.com.rge.bus_app;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -85,6 +86,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Toast.makeText(context, "marker position: " + marker.getPosition().toString(), Toast.LENGTH_LONG).show();
+                setResult(RESULT_OK);
             }
         });
     }
@@ -126,8 +128,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private void addSingleMarker(LatLng latLng, String locationAddress) {
         hideKeyboard();
         mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(latLng).title(locationAddress));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
+        mMap.addMarker(new MarkerOptions().position(latLng).title(locationAddress)).showInfoWindow();
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17.0f));
     }
 
     private void hideKeyboard() {
