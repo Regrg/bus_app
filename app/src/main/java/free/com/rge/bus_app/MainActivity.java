@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private final static int GET_DESTINATION_LOCATION = 2;
 
     private Context context;
-    private Button chooseStart, chooseDestination;
+    private Button chooseStart, chooseDestination, goSearch;
     private TextView startLocationText, destinationLocationText;
     private LatLng startLatLng, destinationLatLng;
 
@@ -39,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private void setLayoutResource() {
         chooseStart = findViewById(R.id.chooseStart);
         chooseDestination = findViewById(R.id.chooseDestination);
+        goSearch = findViewById(R.id.searchButton);
 
         startLocationText = findViewById(R.id.startLocationText);
         destinationLocationText = findViewById(R.id.destinationText);
@@ -58,12 +58,30 @@ public class MainActivity extends AppCompatActivity {
                 goMap(GET_DESTINATION_LOCATION);
             }
         });
+
+        goSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goSearchPage();
+            }
+        });
     }
 
     private void goMap(int requestCode) {
         Intent intent = new Intent();
         intent.setClass(context, MapActivity.class);
         startActivityForResult(intent, requestCode);
+    }
+
+    private void goSearchPage() {
+        if(startLatLng != null && destinationLatLng != null) {
+            Intent intent = new Intent();
+            intent.putExtra(getString(R.string.startLatLng), startLatLng);
+            intent.putExtra(getString(R.string.destinationLatLng), destinationLatLng);
+            intent.setClass(this, SearchResultActivity.class);
+            startActivity(intent);
+        } else
+            Toast.makeText(context, getString(R.string.start_or_destination_notChoose_error), Toast.LENGTH_SHORT).show();
     }
 
     private void grantPermission() {
@@ -81,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && data != null && data.getExtras() != null) {
-            String address = data.getExtras().getString("addressString");
-            LatLng latLng = data.getExtras().getParcelable("latlng");
+            String address = data.getExtras().getString(getString(R.string.address));
+            LatLng latLng = data.getExtras().getParcelable(getString(R.string.latLng));
 
             if (requestCode == GET_START_LOCATION) {
                 startLatLng = latLng;

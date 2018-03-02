@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">bus_app</string>
+    <string name="latLng">latLng</string>
+    <string name="startLatLng">startLatLng</string>
+    <string name="destinationLatLng">destinatingLatLng</string>
+    <string name="address">address</string>
+
+    <string name="start_or_destination_notChoose_error">please choose start and destination</string>
+    <string name="no_location_found_error">no location found</string>
+
 </resources>

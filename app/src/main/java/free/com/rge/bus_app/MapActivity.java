@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
@@ -85,10 +84,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-//                Toast.makeText(context, "marker position: " + marker.getPosition().toString(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent();
-                intent.putExtra("addressString", marker.getTitle());
-                intent.putExtra("latlng", marker.getPosition());
+                intent.putExtra(getString(R.string.address), marker.getTitle());
+                intent.putExtra(getString(R.string.latLng), marker.getPosition());
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -171,7 +169,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 LatLng latLng = new LatLng(addressData.getLatitude(), addressData.getLongitude());
                 addSingleMarker(latLng, concatAddress(addressData));
             } else {
-                Toast.makeText(context, "No Location Found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, getString(R.string.no_location_found_error), Toast.LENGTH_SHORT).show();
             }
 
         } catch (IOException e) {
