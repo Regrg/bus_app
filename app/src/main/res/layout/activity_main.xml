@@ -22,6 +22,7 @@
             android:layout_marginEnd="10dp" />
 
         <TextView
+            android:id="@+id/startLocationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Start_Location"
@@ -45,11 +46,20 @@
             android:layout_marginEnd="10dp"/>
 
         <TextView
+            android:id="@+id/destinationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Destination_Location"
             android:textSize="20sp"/>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/searchButton"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:text="Go Search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

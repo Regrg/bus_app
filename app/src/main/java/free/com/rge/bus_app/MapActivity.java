@@ -85,8 +85,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                Toast.makeText(context, "marker position: " + marker.getPosition().toString(), Toast.LENGTH_LONG).show();
-                setResult(RESULT_OK);
+//                Toast.makeText(context, "marker position: " + marker.getPosition().toString(), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent();
+                intent.putExtra("addressString", marker.getTitle());
+                intent.putExtra("latlng", marker.getPosition());
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
     }
